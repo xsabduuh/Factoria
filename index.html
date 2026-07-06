@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=yes" />
 <title>الموسوعة المعرفية الشخصية</title>
 <meta name="description" content="موسوعة معرفية شخصية تفاعلية تجمع اثني عشر مجالاً معرفياً مع خطة دراسية ودفتر ملاحظات." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -475,11 +475,436 @@ footer.app-footer{
 }
 .scrim.active{display:block;}
 
-@media (max-width:640px){
-  main{padding:20px 16px 60px;}
-  .hero{padding:24px 20px;}
-  .hero h1{font-size:22px;}
-  .topbar{padding:14px 16px;}
+/* ============================================================== */
+/* ===== تنسيق خاص بالهواتف (Mobile-First Responsive) ===== */
+/* ============================================================== */
+
+/* هواتف كبيرة وتابلت صغير (عرض أقل من 820px) */
+@media (max-width: 820px) {
+  main {
+    padding: 16px 16px 50px;
+  }
+  .hero {
+    padding: 20px 18px;
+  }
+  .hero h1 {
+    font-size: 26px;
+  }
+  .hero p {
+    font-size: 13.5px;
+  }
+  .hero-stat {
+    padding: 10px 16px;
+    min-width: 100px;
+    flex: 1 1 auto;
+  }
+  .domains-grid {
+    grid-template-columns: 1fr; /* عمود واحد */
+    gap: 12px;
+  }
+  .domain-card {
+    padding: 16px;
+  }
+  /* صفحة التفاصيل */
+  .domain-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px;
+  }
+  .dd-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  .dd-title h2 {
+    font-size: 20px;
+  }
+  .dd-title p {
+    font-size: 13px;
+  }
+  .tabs {
+    gap: 4px;
+  }
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 12.5px;
+  }
+  .figure-list {
+    grid-template-columns: 1fr; /* عمود واحد */
+  }
+  .book-row {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+  .book-row .book-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .book-info b {
+    font-size: 13px;
+  }
+  .book-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+  .phase-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .phase-head-left {
+    flex-wrap: wrap;
+  }
+  .topbar {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .search-input {
+    font-size: 13px;
+    padding: 8px 32px;
+  }
+  .pill-stat {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+  .pill-stat i {
+    font-size: 11px;
+  }
+  .section-heading {
+    margin: 24px 0 12px;
+  }
+  .section-heading h2 {
+    font-size: 16px;
+  }
+  .section-heading .muted {
+    font-size: 11px;
+  }
+  .journal-form {
+    padding: 16px;
+  }
+  .journal-form input, .journal-form textarea {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+  .journal-entry {
+    padding: 16px;
+  }
+  .journal-entry h4 {
+    font-size: 14px;
+  }
+  .je-delete {
+    top: 12px;
+    inset-inline-end: 12px;
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+  .search-result-item {
+    padding: 12px 14px;
+    flex-wrap: wrap;
+  }
+  .sri-kind {
+    margin-inline-start: 0;
+    margin-top: 4px;
+  }
+}
+
+/* هواتف صغيرة (عرض أقل من 480px) */
+@media (max-width: 480px) {
+  main {
+    padding: 12px 10px 40px;
+  }
+  .topbar {
+    padding: 10px 10px;
+    gap: 8px;
+  }
+  .menu-toggle {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .search-input {
+    font-size: 12px;
+    padding: 6px 28px;
+    border-radius: 10px;
+  }
+  .search-wrap i.icon-search {
+    font-size: 11px;
+    inset-inline-start: 10px;
+  }
+  .search-clear {
+    font-size: 14px;
+    inset-inline-end: 8px;
+  }
+  .pill-stat {
+    font-size: 10px;
+    padding: 3px 8px;
+    gap: 4px;
+  }
+  .pill-stat i {
+    font-size: 9px;
+  }
+  .hero {
+    padding: 16px 14px;
+    border-radius: var(--radius-md);
+  }
+  .hero h1 {
+    font-size: 20px;
+  }
+  .hero p {
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+  .hero-stat {
+    padding: 8px 12px;
+    min-width: 60px;
+  }
+  .hero-stat .num {
+    font-size: 16px;
+  }
+  .hero-stat .lbl {
+    font-size: 10px;
+  }
+  .domain-card {
+    padding: 14px;
+    border-radius: var(--radius-sm);
+  }
+  .domain-card .dc-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .domain-card h3 {
+    font-size: 14px;
+  }
+  .domain-card p {
+    font-size: 12px;
+    min-height: 30px;
+    margin-bottom: 10px;
+  }
+  .domain-detail-header {
+    padding: 14px;
+    border-radius: var(--radius-md);
+  }
+  .dd-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 17px;
+    border-radius: 12px;
+  }
+  .dd-title h2 {
+    font-size: 17px;
+  }
+  .dd-title p {
+    font-size: 12px;
+  }
+  .back-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+    margin-bottom: 12px;
+  }
+  .tabs {
+    gap: 2px;
+    margin-bottom: 14px;
+  }
+  .tab-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    border-bottom-width: 2px;
+  }
+  .chip {
+    padding: 6px 10px;
+    font-size: 11.5px;
+    border-radius: 8px;
+  }
+  .figure-card {
+    padding: 12px;
+    gap: 10px;
+  }
+  .figure-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  .figure-card h4 {
+    font-size: 12.5px;
+  }
+  .figure-card span {
+    font-size: 11px;
+  }
+  .book-row {
+    padding: 10px 12px;
+    gap: 6px;
+    border-radius: 10px;
+  }
+  .book-checkbox {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+    border-radius: 5px;
+  }
+  .book-row .book-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    border-radius: 6px;
+  }
+  .book-info b {
+    font-size: 12px;
+  }
+  .book-info span {
+    font-size: 10px;
+  }
+  .book-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+  .term-item {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .term-item b {
+    font-size: 12.5px;
+  }
+  .term-item span {
+    font-size: 11.5px;
+  }
+  .phase-card {
+    padding: 16px;
+  }
+  .phase-num {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+  .phase-head h3 {
+    font-size: 14px;
+  }
+  .phase-body {
+    font-size: 12px;
+  }
+  .phase-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  .phase-focus .chip {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+  .journal-form {
+    padding: 12px;
+  }
+  .journal-form input, .journal-form textarea {
+    font-size: 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+  .journal-form textarea {
+    min-height: 80px;
+    margin-top: 8px;
+  }
+  .journal-submit {
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+  }
+  .journal-entry {
+    padding: 12px;
+  }
+  .journal-entry h4 {
+    font-size: 13px;
+  }
+  .journal-entry p {
+    font-size: 12px;
+  }
+  .journal-entry .je-date {
+    font-size: 10px;
+  }
+  .je-delete {
+    top: 10px;
+    inset-inline-end: 10px;
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  .search-result-item {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .search-result-item .sri-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  .sri-text b {
+    font-size: 12.5px;
+  }
+  .sri-text span {
+    font-size: 11px;
+  }
+  .sri-kind {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
+  .section-heading {
+    margin: 18px 0 10px;
+  }
+  .section-heading h2 {
+    font-size: 15px;
+  }
+  .section-heading h2 i {
+    font-size: 13px;
+  }
+  .section-heading .muted {
+    font-size: 10px;
+  }
+  .empty-state {
+    padding: 30px 10px;
+  }
+  .empty-state i {
+    font-size: 24px;
+  }
+  .empty-state p {
+    font-size: 12px;
+  }
+  footer.app-footer {
+    font-size: 10px;
+    padding: 20px 0 8px;
+  }
+}
+
+/* تحسينات إضافية للشاشات الصغيرة جداً (أقل من 380px) */
+@media (max-width: 380px) {
+  .topbar {
+    gap: 4px;
+  }
+  .pill-stat {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+  .pill-stat i {
+    font-size: 8px;
+  }
+  .search-input {
+    font-size: 11px;
+    padding: 5px 24px;
+  }
+  .hero h1 {
+    font-size: 18px;
+  }
+  .dd-title h2 {
+    font-size: 15px;
+  }
+  .tab-btn {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
 }
 </style>
 </head>
