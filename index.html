@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-<title>الموسوعة المعرفية الشخصية (النسخة المطوّرة)</title>
+<title>الموسوعة المعرفية الشخصية</title>
 <meta name="description" content="موسوعة معرفية شخصية تفاعلية تجمع اثني عشر مجالاً معرفياً مع خطة دراسية ودفتر ملاحظات." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@ button{font-family:inherit;cursor:pointer;}
   min-height:100vh;
 }
 @media (max-width: 980px){
-  .app-shell{grid-template-columns:1fr;}
+  .app-shell{grid-template-columns: 1fr;}
 }
 
 /* ===== SIDEBAR ===== */
@@ -179,13 +179,21 @@ button{font-family:inherit;cursor:pointer;}
   border:1px solid var(--border);
   color:var(--text-1);
   border-radius:12px;
-  padding:10px 40px 10px 14px;
+  padding:10px 40px 10px 40px;
   font-size:13.5px;
   outline:none;
   transition:border-color .18s ease, box-shadow .18s ease;
 }
 .search-input:focus{border-color:rgba(217,180,95,0.4); box-shadow:0 0 0 3px rgba(217,180,95,0.08);}
 .search-input::placeholder{color:var(--text-3);}
+.search-clear{
+  position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--text-3);font-size:16px;
+  padding:4px;display:none;align-items:center;justify-content:center;
+}
+.search-clear.visible{display:flex;}
+.search-clear:hover{color:var(--text-1);}
+
 .topbar-right{display:flex;align-items:center;gap:10px;margin-inline-start:auto;}
 .pill-stat{
   display:flex;align-items:center;gap:8px;
@@ -516,6 +524,7 @@ footer.app-footer{
       <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass icon-search"></i>
         <input class="search-input" id="globalSearch" placeholder="ابحث في المفاهيم، الشخصيات، الكتب، المصطلحات..." />
+        <button class="search-clear" id="searchClear"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="topbar-right">
         <div class="pill-stat"><i class="fa-solid fa-book"></i> <b id="statBooksRead">0</b>/<span id="statBooksTotal">0</span></div>
@@ -568,7 +577,7 @@ footer.app-footer{
           </div>
         </div>
         <div class="tabs">
-          <button class="tab-btn active" data-tab="concepts"><i class="fa-solid fa-solidbulb"></i> المفاهيم الأساسية</button>
+          <button class="tab-btn active" data-tab="concepts"><i class="fa-solid fa-lightbulb"></i> المفاهيم الأساسية</button>
           <button class="tab-btn" data-tab="figures"><i class="fa-solid fa-user-graduate"></i> الشخصيات المرجعية</button>
           <button class="tab-btn" data-tab="books"><i class="fa-solid fa-books"></i> الكتب الموصى بها</button>
           <button class="tab-btn" data-tab="terms"><i class="fa-solid fa-spell-check"></i> المصطلحات</button>
@@ -952,19 +961,6 @@ const PHASES = [
 const LS_BOOKS = "ke_read_books_v1";
 const LS_JOURNAL = "ke_journal_entries_v1";
 
-function loadReadBooks(){
-  try { return JSON.parse(localStorage.getItem(LS_BOOKS) || "[]"); } catch(e){ return []; }
-}
-function saveReadBooks(arr){
-  safeSave(LS_BOOKS, arr);
-}
-function loadJournal(){
-  try { return JSON.parse(localStorage.getItem(LS_JOURNAL) || "[]"); } catch(e){ return []; }
-}
-function saveJournal(arr){
-  safeSave(LS_JOURNAL, arr);
-}
-
 function safeSave(key, data) {
   try {
     localStorage.setItem(key, JSON.stringify(data));
@@ -975,6 +971,15 @@ function safeSave(key, data) {
   }
 }
 
+function loadReadBooks(){
+  try { return JSON.parse(localStorage.getItem(LS_BOOKS) || "[]"); } catch(e){ return []; }
+}
+function saveReadBooks(arr){ safeSave(LS_BOOKS, arr); }
+function loadJournal(){
+  try { return JSON.parse(localStorage.getItem(LS_JOURNAL) || "[]"); } catch(e){ return []; }
+}
+function saveJournal(arr){ safeSave(LS_JOURNAL, arr); }
+
 let readBooks = new Set(loadReadBooks());
 let journalEntries = loadJournal();
 
@@ -984,10 +989,11 @@ function totalBooksCount(){
   return DOMAINS.reduce((acc,d)=>acc + d.books.length, 0);
 }
 
-/* ============ HELPER: Escape HTML ============ */
-function escapeHtml(str) {
+/* ============ UTILITY ============ */
+
+function escapeHtml(str){
   if (!str) return '';
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
 }
@@ -1087,16 +1093,15 @@ function openDomain(id){
     termsList.appendChild(item);
   });
 
-  // Activate first tab using data-tab
-  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+  // تفعيل التاب الأول بناءً على data-tab وليس الفهرس
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
   const firstTab = document.querySelector('.tab-btn[data-tab="concepts"]');
-  if (firstTab) {
-    firstTab.classList.add("active");
-    document.getElementById("tab-concepts").classList.add("active");
-  }
+  if(firstTab) firstTab.classList.add("active");
+  const firstPanel = document.getElementById("tab-concepts");
+  if(firstPanel) firstPanel.classList.add("active");
 
-  showView("domain-detail", true);
+  showView("domain-detail");
 }
 
 function renderBooksList(d){
@@ -1125,7 +1130,7 @@ function renderBooksList(d){
   });
 }
 
-/* Tabs */
+/* Tabs - باستخدام data-tab */
 document.querySelectorAll(".tab-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
@@ -1183,7 +1188,7 @@ function renderJournal(){
       <p>${escapeHtml(entry.body)}</p>
     `;
     el.querySelector(".je-delete").addEventListener("click", ()=>{
-      if (confirm('هل أنت متأكد من حذف هذه التدوينة نهائياً؟')) {
+      if (confirm('⚠️ هل أنت متأكد من حذف هذه التدوينة نهائياً؟')) {
         journalEntries = journalEntries.filter(e=>e.id !== entry.id);
         saveJournal(journalEntries);
         renderJournal();
@@ -1208,44 +1213,36 @@ document.getElementById("journalSubmit").addEventListener("click", ()=>{
   refreshStats();
 });
 
-/* ============ NAVIGATION with History API ============ */
+/* ============ NAVIGATION ============ */
 
-let lastView = "home";
+let lastView = "home"; // الصفحة السابقة للبحث
 
-function showView(name, fromPopState = false) {
-  // If it's search, we handle it differently (input event)
-  if (name === 'search') return;
-
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  const target = document.getElementById("view-" + name);
-  if (target) target.classList.add("active");
-
-  document.querySelectorAll(".nav-item[data-view]").forEach(item => {
+function showView(name, fromPopState = false){
+  // إخفاء الكل
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  const targetView = document.getElementById("view-"+name);
+  if(targetView) targetView.classList.add("active");
+  
+  // تحديث التنقل في الشريط الجانبي
+  document.querySelectorAll(".nav-item[data-view]").forEach(item=>{
     item.classList.toggle("active", item.dataset.view === name);
   });
-  document.querySelectorAll(".nav-item[data-domain]").forEach(item => {
+  document.querySelectorAll(".nav-item[data-domain]").forEach(item=>{
     item.classList.toggle("active", name === "domain-detail" && item.dataset.domain === currentDomainId);
   });
-
+  
+  // حفظ الصفحة السابقة (ما عدا البحث نفسه)
+  if (name !== 'search') lastView = name;
+  
+  // إغلاق القائمة الجانبية في الموبايل
   closeSidebar();
-  // Clear search input and hide search view
-  document.getElementById("globalSearch").value = '';
-  document.getElementById("view-search").classList.remove("active");
-
-  if (!fromPopState) {
+  window.scrollTo({top:0, behavior:"smooth"});
+  
+  // تحديث تاريخ المتصفح (ما عدا إذا كنا عائدين من popstate)
+  if (!fromPopState && name !== 'search') {
     window.history.pushState({ view: name }, '', '#' + name);
   }
-  lastView = name;
-  window.scrollTo({ top: 0, behavior: "smooth" });
 }
-
-// Listen to back/forward buttons
-window.addEventListener("popstate", (e) => {
-  if (e.state && e.state.view) {
-    // Ensure we don't push history again
-    showView(e.state.view, true);
-  }
-});
 
 document.querySelectorAll("[data-view]").forEach(el=>{
   el.addEventListener("click", (e)=>{
@@ -1254,27 +1251,38 @@ document.querySelectorAll("[data-view]").forEach(el=>{
   });
 });
 
-/* ============ MOBILE SIDEBAR ============ */
+// مستمع أزرار الرجوع/التقديم في المتصفح
+window.addEventListener("popstate", (e) => {
+  if (e.state && e.state.view) {
+    // إلغاء نتائج البحث وإفراغ الحقل
+    document.getElementById('globalSearch').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    showView(e.state.view, true);
+  }
+});
 
+/* ============ MOBILE SIDEBAR ============ */
 const sidebar = document.getElementById("sidebar");
 const scrim = document.getElementById("scrim");
 document.getElementById("menuToggle").addEventListener("click", ()=>{
   sidebar.classList.add("open");
   scrim.classList.add("active");
+  document.body.style.overflow = 'hidden';
 });
 function closeSidebar(){
   sidebar.classList.remove("open");
   scrim.classList.remove("active");
+  document.body.style.overflow = '';
 }
 scrim.addEventListener("click", closeSidebar);
 
-/* ============ SEARCH (Optimized) ============ */
+/* ============ SEARCH ============ */
 
 function buildSearchIndex(){
   const index = [];
   DOMAINS.forEach(d=>{
     index.push({kind:"مجال", label:d.name, sub:d.desc, icon:d.icon, action:()=>openDomain(d.id)});
-    d.concepts.forEach(c=> index.push({kind:"مفهوم", label:c, sub:d.name, icon:"fa-solid fa-solidbulb", action:()=>openDomain(d.id)}));
+    d.concepts.forEach(c=> index.push({kind:"مفهوم", label:c, sub:d.name, icon:"fa-solid fa-lightbulb", action:()=>openDomain(d.id)}));
     d.figures.forEach(f=> index.push({kind:"شخصية", label:f.name, sub:f.note+" · "+d.name, icon:"fa-solid fa-user-graduate", action:()=>openDomain(d.id)}));
     d.books.forEach(b=> index.push({kind:"كتاب", label:b.title, sub:b.author+" · "+d.name, icon:"fa-solid fa-book-open-cover", action:()=>openDomain(d.id)}));
     d.terms.forEach(t=> index.push({kind:"مصطلح", label:t.term, sub:t.def, icon:"fa-solid fa-spell-check", action:()=>openDomain(d.id)}));
@@ -1282,35 +1290,34 @@ function buildSearchIndex(){
   return index;
 }
 
-// Build index ONCE
+// ===== بناء الفهرس مرة واحدة فقط =====
 const searchIndex = buildSearchIndex();
 const globalSearch = document.getElementById("globalSearch");
+const searchClear = document.getElementById("searchClear");
+
+searchClear.addEventListener("click", ()=>{
+  globalSearch.value = '';
+  searchClear.classList.remove('visible');
+  // العودة للصفحة السابقة
+  if (lastView) {
+    showView(lastView);
+  } else {
+    showView('home');
+  }
+});
 
 globalSearch.addEventListener("input", ()=>{
   const q = globalSearch.value.trim();
-
-  // If search is empty, restore last view
-  if(!q){
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    const target = document.getElementById("view-" + lastView);
-    if (target) target.classList.add("active");
-    document.getElementById("view-search").classList.remove("active");
-    // Restore nav highlights (call showView with fromPopState=true)
-    // We just manually restore highlights
-    document.querySelectorAll(".nav-item[data-view]").forEach(item => {
-      item.classList.toggle("active", item.dataset.view === lastView);
-    });
-    document.querySelectorAll(".nav-item[data-domain]").forEach(item => {
-      item.classList.toggle("active", lastView === "domain-detail" && item.dataset.domain === currentDomainId);
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    return;
+  if (q.length > 0) {
+    searchClear.classList.add('visible');
+  } else {
+    searchClear.classList.remove('visible');
   }
 
-  // Save current view before switching to search
-  const activeView = document.querySelector(".view.active");
-  if (activeView && activeView.id !== "view-search") {
-    lastView = activeView.id.replace("view-", "");
+  if(!q){
+    if (lastView) showView(lastView);
+    else showView('home');
+    return;
   }
 
   const results = searchIndex.filter(item =>
@@ -1321,6 +1328,10 @@ globalSearch.addEventListener("input", ()=>{
   const list = document.getElementById("searchResultsList");
   list.innerHTML = "";
   document.getElementById("searchCount").textContent = results.length + " نتيجة";
+
+  // عرض نتائج البحث
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("view-search").classList.add("active");
 
   if(results.length === 0){
     list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><p>لا توجد نتائج مطابقة لبحثك.</p></div>`;
@@ -1333,18 +1344,14 @@ globalSearch.addEventListener("input", ()=>{
         <div class="sri-text"><b>${escapeHtml(r.label)}</b><span>${escapeHtml(r.sub||"")}</span></div>
         <div class="sri-kind">${r.kind}</div>
       `;
-      item.addEventListener("click", ()=>{
-        globalSearch.value = "";
-        r.action();
-        // After action, clear search
-        document.getElementById("view-search").classList.remove("active");
+      item.addEventListener("click", ()=>{ 
+        globalSearch.value = '';
+        searchClear.classList.remove('visible');
+        r.action(); 
       });
       list.appendChild(item);
     });
   }
-
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  document.getElementById("view-search").classList.add("active");
 });
 
 /* ============ INIT ============ */
@@ -1353,10 +1360,9 @@ renderDomainGrids();
 renderPhases();
 renderJournal();
 refreshStats();
-showView("home", true); // fromPopState=true to avoid double push
+showView("home");
 
 })();
 </script>
 </body>
 </html>
-
